@@ -2,12 +2,27 @@
 <html>
 	<head>
 		<title>Lite-JS-Unit-Test</title>
-		<script src="../lite-mobile/broadcast.js" type="text/javascript"></script>
-		<script src="jquery.js" type="text/javascript"></script>
-		<script src="http://code.jquery.com/qunit/qunit-git.js" type="text/javascript"></script>
-		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css" />
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" href="qunit-git.css" />
+		<script src="qunit-git.js" type="text/javascript"></script>
+		<script src="../lite-mobile/core.js" rel="test" type="text/javascript"></script>
+		<script src="../lite-mobile/broadcast.js" rel="test" type="text/javascript"></script>
 	</head>
 	<body>
-		
+		<h1 id="qunit-header">QUnit example</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">test markup, will be hidden</div>
+		<script>
+			$('script[rel=test]').each(function(){
+				var url = $(this).attr('src');
+				url = url.replace(/^.*?([^\/]+)\.js$/g,'$1');
+				console.log(url);
+				document.write('<script src="case/test_'+url+'.js"><\/script'+'>');
+			});
+		</script>
 	</body>
+	
 </html>

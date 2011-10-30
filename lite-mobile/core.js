@@ -1,7 +1,7 @@
 /**
  *  mobile的core整理自 zepto.js
  */
-var LT = (function() {
+var Lite = (function() {
 	
   var undefined, 
   	key, 
@@ -472,4 +472,4 @@ var LT = (function() {
   return $;
 })();
 
-'$' in window || (window.$ = LT);
+'$' in window || (window.$ = Lite);

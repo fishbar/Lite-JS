@@ -64,10 +64,25 @@
 			return this;
 		},
 		/**
-		 * 
+		 * 取消绑定
 		 */
 		unwatch:function(event,caller,handler){
-			
+			if(!this._event.hasOwnProperty(event)){
+				return;
+			}
+			var elist = this._event[event];
+			if(!caller){
+				this._event = [];
+			}else{
+				for(var i=0,len=elist.length;i<len;i++){
+					if(elist[i].caller == caller){
+						if(!handler || (elist[i].handler == handler) ){
+							elist.splice(i,1);
+							i--;
+						}
+					}
+				}
+			}
 		},
 		/** 
 		 * 广播事件，可以传入 广播源，以及相应的一些参数
@@ -87,7 +102,7 @@
 					for(i=0; i<len ; i++){
 						evtobj = {
 							event:event,
-							caller:obj,
+							caller:elist[i].caller,
 							target:target,
 							param:param
 						};
