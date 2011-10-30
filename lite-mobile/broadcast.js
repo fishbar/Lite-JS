@@ -3,39 +3,41 @@
  *  broadcast 全局的广播一个事件，所有的监听者响应这个事件
  */
 
-(function($){
-	$.BroadCast = {
-		_event:[],
-		/**
-		 * 组合事件 -》 gname:[event,event]
-		 * 	每个组合事件都关联着 1到n个其他事件，当这些事件都发生之后，组合事件被触发
-		 */
-		_g_event:{},
-		/**
-		 * 事件 -》组合事件 event : [groupevt,groupevt];
-		 *  当某事件发生时，通知相关的组合事件，如果组合事件所有的event都触发了，则触发组合事件
-		 */
-		_event_g:{},
-		/**
-		 *  广播事件列表，所有的handerl都在这里
-		 */
-		_event:{},
+(function($$){
+	var
+	/**
+	 * 组合事件 -》 gname:[event,event]
+	 * 	每个组合事件都关联着 1到n个其他事件，当这些事件都发生之后，组合事件被触发
+	 */
+	_g_event={},
+	/**
+	 * 事件 -》组合事件 event : [groupevt,groupevt];
+	 *  当某事件发生时，通知相关的组合事件，如果组合事件所有的event都触发了，则触发组合事件
+	 */
+	_event_g={},
+	/**
+	 *  广播事件列表，所有的handerl都在这里
+	 */
+	_event={},
+	
+	BroadCast = {
+		
 		/** 
 		 * 组合事件 ,注册组合事件时调用
 		 *  $.BroadCast.group('pageInited' , 'comList');
 		 **/
 		group:function(gEvent,srcEvent){
-			if(!this._g_event.hasOwnProperty(gEvent)){
-				this._g_event[gEvent] = [];
+			if(!_g_event.hasOwnProperty(gEvent)){
+				_g_event[gEvent] = [];
 			}
-			if(!this._event_g.hasOwnProperty(srcEvent))
-				this._event_g[srcEvent] = [];
-			var g_e = this._g_event[gEvent];
+			if(!_event_g.hasOwnProperty(srcEvent))
+				_event_g[srcEvent] = [];
+			var g_e = _g_event[gEvent];
 			g_e.push({
 				event:srcEvent,
 				done:false
 			});
-			this._event_g[srcEvent].push(gEvent);
+			_event_g[srcEvent].push(gEvent);
 			return this;
 		},
 		/**
@@ -43,7 +45,7 @@
 		 */
 		ungroup:function(gEvent,srcEvent){
 			if(!srcEvent){
-				this._g_event[gEvent] = {};
+				_g_event[gEvent] = {};
 			}else{
 				//TODO
 			}
@@ -57,27 +59,28 @@
 					caller:caller,
 					handler:handler
 			};
-			if(!this._event.hasOwnProperty(event)){
-				this._event[event] = [];
+			if(!_event.hasOwnProperty(event)){
+				_event[event] = [];
 			}
-			this._event[event].push(evt_param);
+			_event[event].push(evt_param);
 			return this;
 		},
 		/**
 		 * 取消绑定
 		 */
 		unwatch:function(event,caller,handler){
-			if(!this._event.hasOwnProperty(event)){
+			if(!_event.hasOwnProperty(event)){
 				return;
 			}
-			var elist = this._event[event];
+			var elist = _event[event];
 			if(!caller){
-				this._event = [];
+				_event = [];
 			}else{
 				for(var i=0,len=elist.length;i<len;i++){
-					if(elist[i].caller == caller){
+					if(elist[i].caller === caller){
 						if(!handler || (elist[i].handler == handler) ){
 							elist.splice(i,1);
+							len -= 1;
 							i--;
 						}
 					}
@@ -95,7 +98,7 @@
 				evtobj,
 				g_evt;
 			// check  single event{}
-			var elist = this._event[event];
+			var elist = _event[event];
 			if(elist){
 				len = elist.length;
 				if(len){ // 遍历事件的监听者
@@ -111,13 +114,13 @@
 				}
 			}
 			
-			var g_elist = this._event_g[event];
+			var g_elist = _event_g[event];
 			if(g_elist){
 				len = g_elist.length;
 				if(len){
 					for(i=0;i < len ; i++){
 						g_evt = g_elist[i];
-						glist = this._g_event[g_evt];
+						glist = _g_event[g_evt];
 						if(!glist) return;
 						for(j=0,len1 = gilst.length; j < len1 ; j++){
 							if(glist[j].event === event ) glist[j].done = true;
@@ -129,6 +132,9 @@
 					}
 				}
 			}
+			return this;
 		}
-	}
+	};
+	
+	$$.BroadCast = BroadCast;
 })(Lite);
