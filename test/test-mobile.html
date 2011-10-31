@@ -9,12 +9,11 @@
 			(function(){
 				var list = [
 					'core',
-					'event',
 					'broadcast',
-					'xml'
+					'template'
 				];
 				for(var i=0;i<list.length;i++){
-					document.write('<script src="../lite-mobile/'+list[i]+'.js" type="text/javascript"><\/script'+'>');
+					document.write('<script src="../lite-mobile/'+list[i]+'.js" rel="test" type="text/javascript"><\/script'+'>');
 				}
 			})();
 		</script>
@@ -31,7 +30,6 @@
 			$('script[rel=test]').each(function(){
 				var url = $(this).attr('src');
 				url = url.replace(/^.*?([^\/]+)\.js$/g,'$1');
-				console.log(url);
 				document.write('<script src="case/test_'+url+'.js" type="text/javascript"><\/script'+'>');
 			});
 		</script>

@@ -18,17 +18,87 @@
  * BUG:
  * 	对于表达式中的引号存在问题,需要处理
  */
-$include('lite/lite.js');
+(function($$){
 
-(function(n){
+function replace_cb($0,$1,$2){
+	var res,type,exp;
+	if(!$1){
+		res = '';
+	}else if($1 == 'end'){
+		res = 't.push("}");' ;
+	}else if($1 == 'else' ){
+		res = 't.push("}else{");' ;
+	}else if($1.match(/^(if|elseif|const|exp):(.*)/)){
+		type = RegExp.$1;
+		switch(type){
+			case 'if':
+				break;
+			case 'elseif':
+				res = format_cond(type,$1);
+				break;
+			case 'exp':
+				res = format_exp($1);
+				break;
+			case 'const':
+				res = format_const($1);
+				break;
+			default:
+				res = $0;
+		}
+		res = 't.push(';
+	}else{
+		res = format_var($1);
+	}
+	return res;
+}
+/**
+ *  解析 函数调用,表达式等等 #test+1 
+ */
+function format_exp($1){
+	
+}
+/**
+ * 解析常量 #{const:xxx}
+ */
+function format_const(){
+	
+}
+/**
+ * 解析变量 #{xxx}
+ */
+function format_var(){
+	
+}
+/**
+ * 解析条件语句 #{if:}#{elseif:} #{end}
+ */
+function format_cond(){
+	
+}
+/**
+ * 解析循环语句 #{foreach:} #{end}
+ */
+function format_repeat(){
+	
+}
 
-n.Template = function(tmp,debug){
+$$.Template = function(tpl,debug){
 	this._debug = debug;
-	this._tmp = this._compress(tmp);
+	this._tmp = this._compress(tpl);
 };
 
-n.Template.prototype={
-	_compress:function(tmp){
+$$.Template.prototype={
+	_compress:function(tpl,debug){
+		var tmp = ['var t=[];t.push("'];
+		//去除引号干扰
+		tpl = tpl.replace(/(\"|\')/g,'\\$1');
+		//去除没用的空tab
+		tpl = tpl.replace(/\s*(\t|\n)+\s*/g,'');
+		
+		tpl = tpl.replace(/#\{(.*?)\}/g,replace_cb);
+		console.log(tpl);
+	},
+	_compress1:function(tmp){
 		//去除引号干扰
 		tmp = tmp.replace(/(\"|\')/g,'\\$1');
 		//去除没用的空tab
@@ -87,10 +157,10 @@ n.Template.prototype={
 		}
 		if(arr_cnt[i])arr_res.push("t.push('"+arr_cnt[i]+"');");
 		if(this._debug){
-			alert(arr_flag.length+":"+arr_cnt.length);
-			//alert(arr_flag.join('\n'));
-			//alert(arr_cnt.join('\n'));
-			//alert(arr_res.join('\n'));
+			console.log(arr_flag.length+":"+arr_cnt.length);
+			//console.log(arr_flag.join('\n'));
+			//console.log(arr_cnt.join('\n'));
+			//console.log(arr_res.join('\n'));
 		}
 		eval("var res=(function(d,_index,_len){"+arr_res.join("")+"return t.join('');})");
 		return res;
